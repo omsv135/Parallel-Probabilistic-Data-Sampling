@@ -42,7 +42,7 @@ def main(in_file_name, p, out_file_name, verbose, track_time):
             start_time = MPI.Wtime()
 
         print("Reading VTK image...", flush=True)
-        data, dims, spacing = read_vtk_image("Isabel_Pressure_Large.vti")
+        data, dims, spacing = read_vtk_image(in_file_name)
         data = np.copy(data, order='C')
         print("Completed reading")
         print(flush=True)
