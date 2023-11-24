@@ -43,7 +43,7 @@ def main(in_file_name, p, out_file_name, verbose, track_time):
 
         print("Reading VTK image...", flush=True)
         data, dims, spacing = read_vtk_image(in_file_name)
-        data = np.copy(data, order='C')
+        data = data.astype('float64', order='C')
         print("Completed reading")
         print(flush=True)
 
@@ -58,7 +58,7 @@ def main(in_file_name, p, out_file_name, verbose, track_time):
             reading_time = MPI.Wtime()
 
         # Numpy array to receive the final processed data at rank 0
-        final_data = np.empty(dims, order='C', dtype=data_dtype)
+        final_data = np.empty(dims, order='C', dtype='float64')
 
         # Creating the data split_sizes
         split = np.array_split( np.arange(0, dims[0]), size, axis=0)
@@ -99,7 +99,7 @@ def main(in_file_name, p, out_file_name, verbose, track_time):
     if rank == 0:
         print("Scattering the data...", flush=True)
     
-    recvbuf = np.zeros(( int(split_sizes[rank]) , dims[1], dims[2]), order='C', dtype=data_dtype)
+    recvbuf = np.zeros(( int(split_sizes[rank]) , dims[1], dims[2]), order='C', dtype='float64')
 
     if verbose == True:
         if rank == 0:
@@ -110,7 +110,7 @@ def main(in_file_name, p, out_file_name, verbose, track_time):
         print(flush=True)
 
     comm.Barrier()
-    comm.Scatterv([data, split_sizes_input, disp_input, MPI.FLOAT], recvbuf, root=0)
+    comm.Scatterv([data, split_sizes_input, disp_input, MPI.DOUBLE], recvbuf, root=0)
 
     if (track_time == True) and (rank == 0):
         scatter_time = MPI.Wtime()
@@ -170,7 +170,7 @@ def main(in_file_name, p, out_file_name, verbose, track_time):
             print(flush=True)
 
         final_coords = np.empty((np.sum(all_point_counts), 3), order='C', dtype='float32')
-        final_vals = np.empty(np.sum(all_point_counts), order='C', dtype=data_dtype)
+        final_vals = np.empty(np.sum(all_point_counts), order='C', dtype='float64')
     else:
         all_coord_counts = None
         coord_buf_disps = None
@@ -194,7 +194,7 @@ def main(in_file_name, p, out_file_name, verbose, track_time):
     comm.Barrier()
 
     comm.Gatherv(coords, [final_coords, all_coord_counts, coord_buf_disps, MPI.FLOAT], root=0)
-    comm.Gatherv(vals, [final_vals, all_point_counts, val_buf_disps, MPI.FLOAT], root=0)
+    comm.Gatherv(vals, [final_vals, all_point_counts, val_buf_disps, MPI.DOUBLE], root=0)
 
     if (track_time == True) and (rank == 0):
         gather_time = MPI.Wtime()

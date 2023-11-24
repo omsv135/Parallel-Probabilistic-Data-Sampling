@@ -92,33 +92,35 @@ def get_val_imp_fn(global_bin_counts, bin_num, data_length, prob):
     sample_count = int(data_length * prob)
     min_bin_samples = sample_count / bin_num
 
-    # if rank == 0:
-    #     print(sample_count, min_bin_samples)
+    
+    # print(sample_count, min_bin_samples)
 
     cur_bin_num = bin_num
     
     j = 0
     while j < bin_num:
         bin_count = global_bin_counts[sorted_idx[j]]
-        # if rank == 0:
-        #     print(f"bin_count: {bin_count}, min_bin_samples: {min_bin_samples}")
-        #     print(f"data_length: {data_length}, cur_bin_count: {cur_bin_num}")
+        
+        # print(f"bin_count: {bin_count}, min_bin_samples: {min_bin_samples}")
+        # print(f"data_length: {data_length}, cur_bin_count: {cur_bin_num}")
 
         if bin_count < min_bin_samples:
             imp_fn[sorted_idx[j]] = bin_count
-            data_length -= bin_count
+            sample_count -= bin_count
             cur_bin_num -= 1
-            min_bin_samples = data_length / cur_bin_num
+            min_bin_samples = sample_count / cur_bin_num
             j += 1
         else:
             for k in range(j, bin_num):
-                # if rank == 0:
-                #     print(f"on_index: {sorted_idx[k]}, min_bin_samples: {min_bin_samples}")
+                
+                # print(f"on_index: {sorted_idx[k]}, min_bin_samples: {min_bin_samples}")
                 imp_fn[sorted_idx[k]] = min_bin_samples
             break
     
     for j in range(bin_num):
         imp_fn[j] /= global_bin_counts[j]
+    
+    # print(flush=True)
     
     return imp_fn
 
