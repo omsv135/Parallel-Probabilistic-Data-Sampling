@@ -31,3 +31,7 @@ Options in Algorithms we implemented:
   -b                    Nuber of bins (only for value-based sampling and gradient-based sampling)
   -r                    Sampling Ratio
 ```
+
+Miscellaneous
+
+We made two shell scripts for 
