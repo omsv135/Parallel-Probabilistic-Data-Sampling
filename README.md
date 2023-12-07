@@ -1,5 +1,5 @@
 # Parallel-Probabilistic-Data-Sampling Algorithms
-Implementing MPI-based parallel data sampling methods based on the following paper: [https://ieeexplore.ieee.org/document/9130956](url)
+Implementing MPI-based parallel data sampling methods based on the following paper: [https://ieeexplore.ieee.org/document/9130956](https://ieeexplore.ieee.org/document/9130956)
 
 The code implemented here runs on MPI with nodes accessible via passwordless ssh. The input is assumed to be VTK image file with 3 dimensions, and the sampled point cloud is stored in the VTP format.
 
